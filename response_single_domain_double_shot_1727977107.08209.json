@@ -1,0 +1,41 @@
+{
+  "strategy": "single_domain_double_shot",
+  "prompt_prefix": "CREATE TABLE stocks (\n    stock_id INTEGER PRIMARY KEY,\n    symbol TEXT NOT NULL,\n    company_name TEXT NOT NULL\n);\n\nCREATE TABLE trades (\n    trade_id INTEGER PRIMARY KEY,\n    stock_id INTEGER,\n    trader_name TEXT NOT NULL,\n    trade_date TEXT NOT NULL,\n    quantity INTEGER NOT NULL,\n    price_per_share REAL NOT NULL,\n    trade_type TEXT CHECK(trade_type IN ('buy', 'sell')),\n    winner_or_loser TEXT CHECK(winner_or_loser IN ('winner', 'loser')),\n    FOREIGN KEY (stock_id) REFERENCES stocks(stock_id)\n);\n Which trades were winners?  \nSELECT trader_name, symbol, quantity, price_per_share\nFROM trades t\nJOIN stocks s ON t.stock_id = s.stock_id\nWHERE winner_or_loser = 'winner';\n  Give me a sqlite select statement that answers the question. Only respond with sqlite syntax. If there is an error do not expalin it!",
+  "questionResults": [
+    {
+      "question": "Which trades were winners?",
+      "sql": "\nSELECT trader_name, symbol, quantity, price_per_share\nFROM trades t\nJOIN stocks s ON t.stock_id = s.stock_id\nWHERE winner_or_loser = 'winner';\n",
+      "queryRawResponse": "[('Alice', 'AAPL', 10, 150.0), ('Charlie', 'TSLA', 3, 900.0), ('Alice', 'AAPL', 7, 160.0), ('Dave', 'MSFT', 15, 320.0), ('Frank', 'NFLX', 12, 600.0), ('Hannah', 'FB', 25, 800.0), ('Ian', 'BABA', 30, 90.0), ('Dave', 'MSFT', 50, 325.0), ('Frank', 'NFLX', 8, 615.0)]",
+      "friendlyResponse": "Sure! Let's break down the trades into a more understandable summary. \n\nIn this list, we see several trades made by different individuals involving various stocks. Each entry includes the trader's name, the stock's symbol, the number of shares traded, and the price per share. Here\u2019s a quick overview of the trades:\n\n1. **Alice** traded **Apple (AAPL)** twice\u2014first, she bought **10 shares at $150** each, and later, she purchased **7 more shares at $160** each.\n2. **Charlie** bought **3 shares of Tesla (TSLA)** at **$900** per share.\n3. **Dave** made two trades with **Microsoft (MSFT)**\u2014he bought **15 shares at $320** each and then **50 shares at $325** each.\n4. **Frank** traded **Netflix (NFLX)** twice as well\u2014he bought **12 shares at $600** each, and later purchased **8 more shares at $615** each.\n5. **Hannah** bought **25 shares of Facebook (FB)** for **$800** each.\n6. **Ian** traded **Alibaba (BABA)**, buying **30 shares at $90** each.\n\nIn total, the data shows various traders actively buying shares in their favorite companies at different prices. It\u2019s a great example of how stock trading works, where traders buy and sell shares based on their investment strategies!",
+      "error": "None"
+    },
+    {
+      "question": "Which trades were losers?",
+      "sql": "\nSELECT trader_name, symbol, quantity, price_per_share\nFROM trades t\nJOIN stocks s ON t.stock_id = s.stock_id\nWHERE winner_or_loser = 'loser';\n",
+      "queryRawResponse": "[('Bob', 'GOOGL', 5, 2800.0), ('Bob', 'GOOGL', 2, 2900.0), ('Emma', 'AMZN', 6, 3500.0), ('Grace', 'NVDA', 20, 375.0), ('Jack', 'SPY', 40, 450.0), ('Emma', 'AMZN', 10, 3400.0)]",
+      "friendlyResponse": "Sure! Let's break down the trades into a friendly summary:\n\nIn this scenario, we have a few individuals making some stock trades. Here\u2019s what each person is doing:\n\n1. **Bob** is trading shares of **Google (GOOGL)**. He purchased 5 shares at a price of $2800 each, and then he bought 2 more shares at a slightly higher price of $2900 each. So overall, Bob is quite interested in owning Google shares!\n\n2. **Emma** is focused on **Amazon (AMZN)**. She made two trades: first, she bought 6 shares at $3500 each, and then, she bought 10 more shares, but this time at a lower price of $3400 each. Looks like Emma believes in Amazon's potential!\n\n3. **Grace** decided to invest in **Nvidia (NVDA)**, purchasing 20 shares at $375 each. Nvidia is known for its powerful graphics cards and tech innovations, making it a popular choice among investors.\n\n4. **Jack** is trading **SPY**, which is an ETF that tracks the S&P 500. He bought 40 shares at $450 each, likely aiming for a diversified investment in the overall market performance.\n\nOverall, these trades illustrate how different investors are choosing to buy shares in technology and internet companies, each based on their own strategy and beliefs about which companies will perform well in the future.",
+      "error": "None"
+    },
+    {
+      "question": "Which stock had the most trades?",
+      "sql": "\nSELECT s.symbol, COUNT(t.trade_id) AS trade_count\nFROM trades t\nJOIN stocks s ON t.stock_id = s.stock_id\nGROUP BY s.symbol\nORDER BY trade_count DESC\nLIMIT 1;\n",
+      "queryRawResponse": "[('NFLX', 2)]",
+      "friendlyResponse": "Sure! It looks like you've made a stock trade involving Netflix, which is represented by the ticker symbol \"NFLX.\" The \"2\" next to it indicates that you have bought 2 shares of Netflix. So, in simple terms, you've purchased 2 shares of Netflix stock! If you have any more questions about trading or stocks, feel free to ask!",
+      "error": "None"
+    },
+    {
+      "question": "Which trader had the highest number of winning trades?",
+      "sql": "\nSELECT trader_name, COUNT(*) AS winning_trade_count\nFROM trades\nWHERE winner_or_loser = 'winner'\nGROUP BY trader_name\nORDER BY winning_trade_count DESC\nLIMIT 1;\n",
+      "queryRawResponse": "[('Frank', 2)]",
+      "friendlyResponse": "Sure! It looks like we have some information about stock trades, and in this case, there's a trader named Frank who made 2 trades. So, in simple terms, Frank is actively participating in the stock market by buying or selling stocks on two occasions. It's great to see traders like him getting involved! If you have any more questions or want to know more about how trading works, feel free to ask!",
+      "error": "None"
+    },
+    {
+      "question": "What were the average prices for each stock traded?",
+      "sql": "\nSELECT s.symbol, AVG(t.price_per_share) AS average_price\nFROM trades t\nJOIN stocks s ON t.stock_id = s.stock_id\nGROUP BY s.symbol;\n",
+      "queryRawResponse": "[('AAPL', 155.0), ('AMZN', 3450.0), ('BABA', 90.0), ('FB', 800.0), ('GOOGL', 2850.0), ('MSFT', 322.5), ('NFLX', 607.5), ('NVDA', 375.0), ('SPY', 450.0), ('TSLA', 900.0)]",
+      "friendlyResponse": "Sure! It looks like we've got a list of some popular stocks along with their current prices. Let's break it down:\n\n1. **AAPL (Apple)** - $155.00: Apple is well-known for its innovative gadgets like the iPhone and Mac computers. \n2. **AMZN (Amazon)** - $3,450.00: Amazon is a giant in online shopping and cloud services, with a high stock price reflecting its massive business.\n3. **BABA (Alibaba)** - $90.00: This is a Chinese company similar to Amazon that specializes in e-commerce and technology.\n4. **FB (Facebook)** - $800.00: Now known as Meta Platforms, this company is a major player in social media and virtual reality.\n5. **GOOGL (Google)** - $2,850.00: Google, owned by Alphabet, is a leader in internet services and advertising.\n6. **MSFT (Microsoft)** - $322.50: Microsoft is well-known for its software products like Windows and Office, as well as cloud services.\n7. **NFLX (Netflix)** - $607.50: Netflix is a streaming service provider that changed how we consume movies and TV shows.\n8. **NVDA (NVIDIA)** - $375.00: NVIDIA is recognized for its graphics processing units (GPUs), which are essential for gaming and AI technology.\n9. **SPY (S&P 500 ETF)** - $450.00: This is an exchange-traded fund that represents a collection of 500 large U.S. companies, giving investors exposure to the overall market.\n10. **TSLA (Tesla)** - $900.00: Tesla is at the forefront of electric vehicles and sustainable energy solutions.\n\nIn summary, this list showcases a variety of tech giants and popular companies, each with its own unique products and market influence. The prices indicate how much one share of each stock costs, and the higher the price, the more investors have decided that these companies are worth. Understanding this list can give you a good starting point for learning about stock trading!",
+      "error": "None"
+    }
+  ]
+}

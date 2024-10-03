@@ -1,0 +1,41 @@
+{
+  "strategy": "zero_shot",
+  "prompt_prefix": "CREATE TABLE stocks (\n    stock_id INTEGER PRIMARY KEY,\n    symbol TEXT NOT NULL,\n    company_name TEXT NOT NULL\n);\n\nCREATE TABLE trades (\n    trade_id INTEGER PRIMARY KEY,\n    stock_id INTEGER,\n    trader_name TEXT NOT NULL,\n    trade_date TEXT NOT NULL,\n    quantity INTEGER NOT NULL,\n    price_per_share REAL NOT NULL,\n    trade_type TEXT CHECK(trade_type IN ('buy', 'sell')),\n    winner_or_loser TEXT CHECK(winner_or_loser IN ('winner', 'loser')),\n    FOREIGN KEY (stock_id) REFERENCES stocks(stock_id)\n);\n Give me a sqlite select statement that answers the question. Only respond with sqlite syntax. If there is an error do not expalin it!",
+  "questionResults": [
+    {
+      "question": "Which trades were winners?",
+      "sql": "\nSELECT * FROM trades WHERE winner_or_loser = 'winner';\n",
+      "queryRawResponse": "[(1, 1, 'Alice', '2024-09-20', 10, 150.0, 'buy', 'winner'), (3, 3, 'Charlie', '2024-09-22', 3, 900.0, 'buy', 'winner'), (4, 1, 'Alice', '2024-09-23', 7, 160.0, 'sell', 'winner'), (6, 4, 'Dave', '2024-09-25', 15, 320.0, 'buy', 'winner'), (8, 6, 'Frank', '2024-09-27', 12, 600.0, 'buy', 'winner'), (10, 8, 'Hannah', '2024-09-29', 25, 800.0, 'sell', 'winner'), (11, 9, 'Ian', '2024-09-30', 30, 90.0, 'buy', 'winner'), (13, 4, 'Dave', '2024-10-02', 50, 325.0, 'buy', 'winner'), (15, 6, 'Frank', '2024-10-04', 8, 615.0, 'buy', 'winner')]",
+      "friendlyResponse": "Sure! Let\u2019s break down the trades in a simple and friendly way, so it's easy to understand, especially if you're new to trading.\n\nHere\u2019s a summary of the stock trades:\n\n1. **Alice** started things off by buying **10 shares** on **September 20, 2024**, at a price of **$150** per share. Her trade was a success!\n\n2. Next up, **Charlie** jumped in and bought **3 shares** on **September 22, 2024**, at **$900** each. He also experienced a winning trade!\n\n3. Later on, on **September 23, 2024**, Alice sold **7 shares** at **$160** each. Once again, this transaction was a success for her!\n\n4. On **September 25, 2024**, **Dave** bought **15 shares** at **$320** each, and it was another winner for him!\n\n5. A couple of days later, **Frank** bought **12 shares** on **September 27, 2024**, for **$600** each, achieving a successful trade as well!\n\n6. On **September 29, 2024**, **Hannah** sold **25 shares** at **$800** each, and this was also a winning trade for her!\n\n7. Then, **Ian** came in on **September 30, 2024**, and bought **30 shares** at a price of **$90** per share. He celebrated his success too!\n\n8. Following Ian, **Dave** made another purchase on **October 2, 2024**, buying **50 shares** for **$325** each. This trade was also a win for him!\n\n9. Finally, **Frank** ended this trading sequence by buying **8 shares** on **October 4, 2024**, at **$615** each, and he enjoyed another successful trade!\n\nOverall, each of these traders made trades that turned out to be successful, which is great news for all of them! It\u2019s important to note that investing in stocks involves buying and selling shares of companies, and the goal is often to sell at a higher price than you bought, which can lead to profits (or \"winning\" trades).",
+      "error": "None"
+    },
+    {
+      "question": "Which trades were losers?",
+      "sql": "\nSELECT * FROM trades WHERE winner_or_loser = 'loser';\n",
+      "queryRawResponse": "[(2, 2, 'Bob', '2024-09-21', 5, 2800.0, 'sell', 'loser'), (5, 2, 'Bob', '2024-09-24', 2, 2900.0, 'buy', 'loser'), (7, 5, 'Emma', '2024-09-26', 6, 3500.0, 'sell', 'loser'), (9, 7, 'Grace', '2024-09-28', 20, 375.0, 'buy', 'loser'), (12, 10, 'Jack', '2024-10-01', 40, 450.0, 'sell', 'loser'), (14, 5, 'Emma', '2024-10-03', 10, 3400.0, 'sell', 'loser')]",
+      "friendlyResponse": "Sure! Here\u2019s a friendly summary of the stock trades mentioned:\n\n1. **Bob's Trades**:\n   - On **September 21, 2024**, Bob sold **5 shares** for **$2,800** each. Unfortunately, this trade is marked as a loser, meaning he didn't make a profit on it.\n   - Just a few days later, on **September 24, 2024**, he bought **2 shares** for **$2,900** each. This trade is also listed as a loser.\n\n2. **Emma's Trades**:\n   - On **September 26, 2024**, Emma sold **6 shares** for **$3,500** each, but like Bob's past trades, it\u2019s noted as a losing trade.\n   - Then, on **October 3, 2024**, Emma sold **10 shares** for **$3,400** each. This trade is also recorded as a loser.\n\n3. **Grace's Trade**:\n   - On **September 28, 2024**, Grace bought **20 shares** for **$375** each. Her trade is classified as a loser as well.\n\n4. **Jack's Trade**:\n   - On **October 1, 2024**, Jack sold **40 shares** for **$450** each. Similar to the other trades, it\u2019s labeled as a losing deal.\n\nIn summary, all the trades made by Bob, Emma, Grace, and Jack ended up being losing trades, which means they didn't sell at a profit compared to their purchase prices. This can be an important lesson in trading\u2014sometimes things don\u2019t go as planned, and it\u2019s crucial to analyze why and learn from those experiences!",
+      "error": "None"
+    },
+    {
+      "question": "Which stock had the most trades?",
+      "sql": "\nSELECT symbol, COUNT(*) AS trade_count \nFROM trades \nJOIN stocks ON trades.stock_id = stocks.stock_id \nGROUP BY stocks.stock_id \nORDER BY trade_count DESC \nLIMIT 1;\n",
+      "queryRawResponse": "[('NFLX', 2)]",
+      "friendlyResponse": "Sure! It looks like we have information about a stock trade involving Netflix, which is represented by the ticker symbol \"NFLX.\" The data shows that 2 shares of Netflix were traded. This means someone bought or sold 2 shares of Netflix stock. If you're new to trading, think of stocks like pieces of ownership in a company. So, in this case, owning 2 shares means having a small piece of Netflix!",
+      "error": "None"
+    },
+    {
+      "question": "Which trader had the highest number of winning trades?",
+      "sql": "\nSELECT trader_name, COUNT(*) AS winning_trades\nFROM trades\nWHERE winner_or_loser = 'winner'\nGROUP BY trader_name\nORDER BY winning_trades DESC\nLIMIT 1;\n",
+      "queryRawResponse": "[('Frank', 2)]",
+      "friendlyResponse": "Sure! The data you have indicates that there is a trader named Frank who has made 2 stock trades. It's a simple way to see how much activity he has in the trading market. So basically, Frank is getting involved in trading stocks, which means he\u2019s making some investment decisions by buying or selling. This could be a great opportunity for him to learn more about the stock market!",
+      "error": "None"
+    },
+    {
+      "question": "What were the average prices for each stock traded?",
+      "sql": "\nSELECT s.symbol, AVG(t.price_per_share) AS average_price\nFROM stocks s\nJOIN trades t ON s.stock_id = t.stock_id\nGROUP BY s.symbol;\n",
+      "queryRawResponse": "[('AAPL', 155.0), ('AMZN', 3450.0), ('BABA', 90.0), ('FB', 800.0), ('GOOGL', 2850.0), ('MSFT', 322.5), ('NFLX', 607.5), ('NVDA', 375.0), ('SPY', 450.0), ('TSLA', 900.0)]",
+      "friendlyResponse": "Sure! Here's a friendly summary of the stock trade data you provided:\n\nIn the world of investing, we often look at the prices of different companies' stock to gauge their current value in the market. Here's a quick overview of some popular stocks and their trading prices:\n\n1. **Apple (AAPL)**: $155.00\n2. **Amazon (AMZN)**: $3,450.00\n3. **Alibaba (BABA)**: $90.00\n4. **Facebook (now Meta Platforms - FB)**: $800.00\n5. **Google (Alphabet - GOOGL)**: $2,850.00\n6. **Microsoft (MSFT)**: $322.50\n7. **Netflix (NFLX)**: $607.50\n8. **NVIDIA (NVDA)**: $375.00\n9. **S&P 500 ETF (SPY)**: $450.00\n10. **Tesla (TSLA)**: $900.00\n\nThese prices reflect how much each share of these companies is currently trading for. For instance, if you wanted to buy one share of Apple, it would cost you $155. Some of these companies, like Amazon and Tesla, have higher share prices, indicating they are well-established and highly valued in the market. \n\nUnderstanding these figures can help you make informed decisions about which stocks to buy, sell, or hold in your trading journey. Happy trading!",
+      "error": "None"
+    }
+  ]
+}

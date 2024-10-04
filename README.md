@@ -16,3 +16,6 @@
 - schema.py: This script defines the database schema for the project, including the creation of tables such as stocks and trades. It provides a structured representation of the data model used in the SQLite database.
 - setup.sql: This SQL script is responsible for creating the initial structure of the database. It defines tables, primary keys, and foreign keys necessary for storing stock and trading information.
 - setupData.sql: This script populates the database with initial data for testing and analysis. It includes sample stocks and trades to facilitate the querying process.
+
+### Results
+- Overall, both approaches are consistent in their results, but the single-shot strategy provides more detailed breakdowns and aggregation compared to the zero-shot, which is more direct in returning results.
